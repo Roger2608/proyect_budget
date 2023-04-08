@@ -1,0 +1,144 @@
+-- -- BEGIN CREATE DATA BASE AND TABLES
+-- CREATE SCHEMA presupuestofamiliar;
+--
+-- CREATE  TABLE presupuestofamiliar.address (
+--                                               id                   BIGINT  NOT NULL   AUTO_INCREMENT  PRIMARY KEY,
+--                                               distrito             VARCHAR(255)       ,
+--                                               pais                 VARCHAR(255)       ,
+--                                               provincia            VARCHAR(255)       ,
+--                                               zipcode              VARCHAR(255)
+-- ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+--
+-- CREATE  TABLE presupuestofamiliar.family (
+--                                              id                   BIGINT  NOT NULL   AUTO_INCREMENT  PRIMARY KEY,
+--                                              name                 VARCHAR(255)
+-- ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+--
+-- CREATE  TABLE presupuestofamiliar.group_family (
+--                                                    id                   BIGINT  NOT NULL   AUTO_INCREMENT  PRIMARY KEY,
+--                                                    family_id            BIGINT       ,
+--                                                    CONSTRAINT `FKkwhmnvctnc6sguy2peavu4d6` FOREIGN KEY ( family_id ) REFERENCES presupuestofamiliar.family( id ) ON DELETE NO ACTION ON UPDATE NO ACTION
+-- ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+--
+-- CREATE INDEX `FKkwhmnvctnc6sguy2peavu4d6` ON presupuestofamiliar.group_family ( family_id );
+--
+-- CREATE  TABLE presupuestofamiliar.login (
+--                                             id                   BIGINT  NOT NULL   AUTO_INCREMENT  PRIMARY KEY,
+--                                             email                VARCHAR(255)       ,
+--                                             password             VARCHAR(255)
+-- ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+--
+-- CREATE  TABLE presupuestofamiliar.methodpayment (
+--                                                     id                   BIGINT  NOT NULL   AUTO_INCREMENT  PRIMARY KEY,
+--                                                     `typeMethod`         VARCHAR(255)
+-- ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+--
+-- CREATE  TABLE presupuestofamiliar.payment (
+--                                               id                   BIGINT  NOT NULL   AUTO_INCREMENT  PRIMARY KEY,
+--                                               creditinstallments   INT       ,
+--                                               method_payment_id    BIGINT       ,
+--                                               CONSTRAINT `FKqqm18q8y9axo03pdfi4m71e68` FOREIGN KEY ( method_payment_id ) REFERENCES presupuestofamiliar.methodpayment( id ) ON DELETE NO ACTION ON UPDATE NO ACTION
+-- ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+--
+-- CREATE INDEX `FKqqm18q8y9axo03pdfi4m71e68` ON presupuestofamiliar.payment ( method_payment_id );
+--
+-- CREATE  TABLE presupuestofamiliar.`user` (
+--                                              id                   BIGINT  NOT NULL   AUTO_INCREMENT  PRIMARY KEY,
+--                                              `firstName`          VARCHAR(255)       ,
+--                                              `lastName`           VARCHAR(255)       ,
+--                                              address_id           BIGINT       ,
+--                                              `group_family_ID`    BIGINT       ,
+--                                              login_id             BIGINT       ,
+--                                              user_id              BIGINT       ,
+--                                              CONSTRAINT `FK4l9qhpm4r0eaert7qibqb1iwl` FOREIGN KEY ( login_id ) REFERENCES presupuestofamiliar.login( id ) ON DELETE NO ACTION ON UPDATE NO ACTION,
+--                                              CONSTRAINT `FKjdfyibijm8tdrsqaui44vpvl6` FOREIGN KEY ( user_id ) REFERENCES presupuestofamiliar.group_family( id ) ON DELETE NO ACTION ON UPDATE NO ACTION,
+--                                              CONSTRAINT `FKl92o9dn2esgfdk1t6rd98o7e8` FOREIGN KEY ( address_id ) REFERENCES presupuestofamiliar.address( id ) ON DELETE NO ACTION ON UPDATE NO ACTION,
+--                                              CONSTRAINT `FKmn4bkdfmow6yvnsdcu48rd60o` FOREIGN KEY ( `group_family_ID` ) REFERENCES presupuestofamiliar.group_family( id ) ON DELETE NO ACTION ON UPDATE NO ACTION
+-- ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+--
+-- CREATE INDEX `FKl92o9dn2esgfdk1t6rd98o7e8` ON presupuestofamiliar.`user` ( address_id );
+--
+-- CREATE INDEX `FKmn4bkdfmow6yvnsdcu48rd60o` ON presupuestofamiliar.`user` ( `group_family_ID` );
+--
+-- CREATE INDEX `FK4l9qhpm4r0eaert7qibqb1iwl` ON presupuestofamiliar.`user` ( login_id );
+--
+-- CREATE INDEX `FKjdfyibijm8tdrsqaui44vpvl6` ON presupuestofamiliar.`user` ( user_id );
+--
+-- CREATE  TABLE presupuestofamiliar.budget (
+--                                              id                   BIGINT  NOT NULL   AUTO_INCREMENT  PRIMARY KEY,
+--                                              required             CHAR(1)       ,
+--                                              state                CHAR(1)       ,
+--                                              `type`               CHAR(1)       ,
+--                                              family_id            BIGINT       ,
+--                                              CONSTRAINT `FK66mwxptqbc5nu8oxto9coqds3` FOREIGN KEY ( family_id ) REFERENCES presupuestofamiliar.family( id ) ON DELETE NO ACTION ON UPDATE NO ACTION
+-- ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+--
+-- CREATE INDEX `FK66mwxptqbc5nu8oxto9coqds3` ON presupuestofamiliar.budget ( family_id );
+--
+-- CREATE  TABLE presupuestofamiliar.spending (
+--                                                id                   BIGINT  NOT NULL   AUTO_INCREMENT  PRIMARY KEY,
+--                                                amount               DOUBLE       ,
+--                                                payment_id           BIGINT       ,
+--                                                user_id              BIGINT       ,
+--                                                budget_id            BIGINT       ,
+--                                                CONSTRAINT `FKllsp21aud73sj480ekh98tk5r` FOREIGN KEY ( budget_id ) REFERENCES presupuestofamiliar.budget( id ) ON DELETE NO ACTION ON UPDATE NO ACTION,
+--                                                CONSTRAINT `FKm9uibp7po0guoxpxciulq5ut3` FOREIGN KEY ( user_id ) REFERENCES presupuestofamiliar.`user`( id ) ON DELETE NO ACTION ON UPDATE NO ACTION,
+--                                                CONSTRAINT `FKmf3wk5qbafeh7px67wtmr0qos` FOREIGN KEY ( payment_id ) REFERENCES presupuestofamiliar.payment( id ) ON DELETE NO ACTION ON UPDATE NO ACTION
+-- ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+--
+-- CREATE INDEX `FKmf3wk5qbafeh7px67wtmr0qos` ON presupuestofamiliar.spending ( payment_id );
+--
+-- CREATE INDEX `FKm9uibp7po0guoxpxciulq5ut3` ON presupuestofamiliar.spending ( user_id );
+--
+-- CREATE INDEX `FKllsp21aud73sj480ekh98tk5r` ON presupuestofamiliar.spending ( budget_id );
+--
+-- CREATE  TABLE presupuestofamiliar.detail (
+--                                              id                   BIGINT  NOT NULL   AUTO_INCREMENT  PRIMARY KEY,
+--                                              amount               DOUBLE       ,
+--                                              description          VARCHAR(255)       ,
+--                                              groupcategory        CHAR(1)       ,
+--                                              `type`               CHAR(1)       ,
+--                                              unitmeasure          CHAR(6)       ,
+--                                              unitprice            CHAR(3)       ,
+--                                              details_id           BIGINT       ,
+--                                              CONSTRAINT `FKhsu8ty1937uaic5inu8m6ajf0` FOREIGN KEY ( details_id ) REFERENCES presupuestofamiliar.spending( id ) ON DELETE NO ACTION ON UPDATE NO ACTION
+-- ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+--
+-- CREATE INDEX `FKhsu8ty1937uaic5inu8m6ajf0` ON presupuestofamiliar.detail ( details_id );
+-- -- END CREATE DATA BASE AND TABLES
+--
+-- -- BEGIN CRETE INSERT DATA
+-- INSERT INTO presupuestofamiliar.address( distrito, pais, provincia, zipcode ) VALUES ( 'san martin de porres', 'Peru', 'lima', '012');
+-- INSERT INTO presupuestofamiliar.address( distrito, pais, provincia, zipcode ) VALUES ( 'callao', 'Peru', 'callao', '012');
+-- INSERT INTO presupuestofamiliar.family( name ) VALUES ( 'Familia Cabrera Firel');
+-- INSERT INTO presupuestofamiliar.family( name ) VALUES ( 'Familia Cabrera Muñoz');
+-- INSERT INTO presupuestofamiliar.group_family( family_id ) VALUES ( 1);
+-- INSERT INTO presupuestofamiliar.group_family( family_id ) VALUES ( 2);
+-- INSERT INTO presupuestofamiliar.login( email, password ) VALUES ( 'rogercabrera2608@gmail.com', '159753Ricm');
+-- INSERT INTO presupuestofamiliar.login( email, password ) VALUES ( 'therfirel04@gmail.com', '159753mefm');
+-- INSERT INTO presupuestofamiliar.login( email, password ) VALUES ( 'segundocabrera@gmail.com', '159753sacc');
+-- INSERT INTO presupuestofamiliar.login( email, password ) VALUES ( 'dorismuñoz@gmail.com', '159753dmc');
+-- INSERT INTO presupuestofamiliar.login( email, password ) VALUES ( 'anaelizabet@gmail.com', '159753aecm');
+-- INSERT INTO presupuestofamiliar.methodpayment( `typeMethod` ) VALUES ( 'Debit');
+-- INSERT INTO presupuestofamiliar.methodpayment( `typeMethod` ) VALUES ( 'Credit');
+-- INSERT INTO presupuestofamiliar.payment( creditinstallments, method_payment_id ) VALUES ( 0, 1);
+-- INSERT INTO presupuestofamiliar.payment( creditinstallments, method_payment_id ) VALUES ( 2, 2);
+-- INSERT INTO presupuestofamiliar.`user`( `firstName`, `lastName`, address_id, `group_family_ID`, login_id, user_id ) VALUES ( 'roger', 'cabrera', 1, 1, 1, 1);
+-- INSERT INTO presupuestofamiliar.`user`( `firstName`, `lastName`, address_id, `group_family_ID`, login_id, user_id ) VALUES ( 'esther', 'firel', 1, 1, 2, 1);
+-- INSERT INTO presupuestofamiliar.`user`( `firstName`, `lastName`, address_id, `group_family_ID`, login_id, user_id ) VALUES ( 'segundo', 'cabrera', 2, 2, 3, 2);
+-- INSERT INTO presupuestofamiliar.`user`( `firstName`, `lastName`, address_id, `group_family_ID`, login_id, user_id ) VALUES ( 'doris', 'muñoz', 2, 2, 4, 2);
+-- INSERT INTO presupuestofamiliar.`user`( `firstName`, `lastName`, address_id, `group_family_ID`, login_id, user_id ) VALUES ( 'ana', 'cabrera', 2, 2, 5, 2);
+-- INSERT INTO presupuestofamiliar.budget( required, state, `type`, family_id ) VALUES ( 'A', 'B', 'C', 1);
+-- INSERT INTO presupuestofamiliar.budget( required, state, `type`, family_id ) VALUES ( 'A', 'B', 'C', 2);
+-- INSERT INTO presupuestofamiliar.spending( amount, payment_id, user_id, budget_id ) VALUES ( 100.2, 1, 1, 1);
+-- INSERT INTO presupuestofamiliar.spending( amount, payment_id, user_id, budget_id ) VALUES ( 101.2, 1, 2, 1);
+-- INSERT INTO presupuestofamiliar.spending( amount, payment_id, user_id, budget_id ) VALUES ( 102.2, 1, 3, 2);
+-- INSERT INTO presupuestofamiliar.spending( amount, payment_id, user_id, budget_id ) VALUES ( 103.2, 1, 4, 2);
+-- INSERT INTO presupuestofamiliar.spending( amount, payment_id, user_id, budget_id ) VALUES ( 104.2, 1, 5, 2);
+-- INSERT INTO presupuestofamiliar.detail( amount, description, groupcategory, `type`, unitmeasure, unitprice, details_id ) VALUES ( 50.0, 'sasdasd', 'A', 'B', null, null, 1);
+-- INSERT INTO presupuestofamiliar.detail( amount, description, groupcategory, `type`, unitmeasure, unitprice, details_id ) VALUES ( 50.2, 'sasdasd2', 'A', 'B', null, null, 1);
+-- INSERT INTO presupuestofamiliar.detail( amount, description, groupcategory, `type`, unitmeasure, unitprice, details_id ) VALUES ( 101.2, 'sasdasd', 'A', 'B', null, null, 2);
+-- INSERT INTO presupuestofamiliar.detail( amount, description, groupcategory, `type`, unitmeasure, unitprice, details_id ) VALUES ( 102.2, 'sasdasd2', 'A', 'B', null, null, 3);
+-- INSERT INTO presupuestofamiliar.detail( amount, description, groupcategory, `type`, unitmeasure, unitprice, details_id ) VALUES ( 103.2, 'sasdasd', 'A', 'B', null, null, 4);
+-- INSERT INTO presupuestofamiliar.detail( amount, description, groupcategory, `type`, unitmeasure, unitprice, details_id ) VALUES ( 104.2, 'sasdasd2', 'A', 'B', null, null, 5);
+-- -- END CRETE INSERT DATA

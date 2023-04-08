@@ -12,18 +12,18 @@ import javax.persistence.*;
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "product")
+@Table(name = "detail")
 public class Detail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String description;
-    private Long amount;
-    private UnitPrice unitPrice;
+    private Double amount;
+    private String unitPrice;
     //indica el tipo de detalle(producto, servicio,otro)
-    private Type type;
+    private String type;
     // Begin Campos en el caso el type sea producto
-    private GroupCategory groupCategory;
-    private UnitMeasure unitMeasure;
+    private String groupCategory;
+    private String unitMeasure;
     // End Campos en el caso el type sea producto
 }

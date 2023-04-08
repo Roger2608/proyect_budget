@@ -21,7 +21,6 @@ public class User {
     @ManyToOne
     @JoinColumn(name = "address_id")
     private Address address;
-    @OneToOne
-    @JoinColumn(name = "group_family_ID")
-    private GroupFamily groupFamily;
+    @Column(name = "group_family_id")
+    private Long groupFamilyId;
 }

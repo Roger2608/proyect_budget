@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -18,8 +19,11 @@ public class Budget {
     private Long id;
     private Type type;
     private Required required;
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "family_id")
     private Family family;
+    @OneToMany
+    @JoinColumn(name = "budget_id")
+    private Set<Spending> spendings;
     private State state;
 }
